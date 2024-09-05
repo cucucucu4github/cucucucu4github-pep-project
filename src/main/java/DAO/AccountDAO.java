@@ -129,18 +129,69 @@ public class AccountDAO {
         return null;
     }
 
-    // update an account, return boolean.
-    // true: update successful
-    // false: update failure
-    public Boolean updateAccount(Account account){
-        return true;
+    // update an account password by id and password, return boolean.
+    public void updateAccountPasswordById(int id, String password){
+        try(Connection connection = ConnectionUtil.getConnection()){
+
+            // prepare the query statement
+            String sql = "UPDATE Account SET password = ? WHERE account_id = ?;";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, password);
+            ps.setInt(2, id);
+            
+            // execute the query, and then get the result;
+            ps.executeUpdate();
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
     }
 
-    // delete account by id, return boolean
-    // true: delete successful
-    // false: delete failure
-    public Boolean deleteAccountById(int id){
-        return true;
+    // update an account password by username and password, return boolean.
+    public void updateAccountPasswordByUsername(String username, String password){
+        try(Connection connection = ConnectionUtil.getConnection()){
+
+            // prepare the query statement
+            String sql = "UPDATE Account SET password = ? WHERE username = ?;";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, password);
+            ps.setString(2, username);
+            
+            // execute the query, and then get the result;
+            ps.executeUpdate();
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
     }
 
+    // delete account by username
+    public void deleteAccountByUsername(String username){
+        try(Connection connection = ConnectionUtil.getConnection()){
+
+            // prepare the query statement
+            String sql = "DELETE FROM Account WHERE username = String";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, username);
+            
+            // execute the query, and then get the result;
+            ps.executeUpdate();
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // delete account by id
+    public void deleteAccountById(int id){
+        try(Connection connection = ConnectionUtil.getConnection()){
+
+            // prepare the query statement
+            String sql = "DELETE FROM Account WHERE account_id = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, id);
+            
+            // execute the query, and then get the result;
+            ps.executeUpdate();
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
 }
