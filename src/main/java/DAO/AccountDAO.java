@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 
 /*
- * table Account:  
+ * TABLE Account:  
  * account_id   integer         primary key auto_increment,
  * username     varchar(255)    unique,
  * password     varchar(255)
@@ -43,7 +43,7 @@ public class AccountDAO {
                 }
             }
         }catch(SQLException e){
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         }
         return accounts;
     }
@@ -69,7 +69,7 @@ public class AccountDAO {
                 }
             }
         }catch(SQLException e){
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         }
         return null;
     }
@@ -95,7 +95,7 @@ public class AccountDAO {
                 return newAccount;
             }
         }catch(SQLException e){
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         }
         return null;
     }
@@ -123,7 +123,7 @@ public class AccountDAO {
             }
     
         }catch(SQLException e){
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         }
         // if we didn't return eariler when we hit the re.next(), then we update failure.
         return null;
@@ -148,7 +148,7 @@ public class AccountDAO {
             if(updatedRowsNum == 1) return true;
 
         }catch(SQLException e){
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         }
 
         return false;
@@ -172,7 +172,7 @@ public class AccountDAO {
             if(updatedRowsNum == 1) return true;
 
         }catch(SQLException e){
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         }
         return false;
     }
@@ -194,7 +194,7 @@ public class AccountDAO {
             if(rowsDeletedNum == 1) return true;
 
         }catch(SQLException e){
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         }
 
         return false;
@@ -217,7 +217,7 @@ public class AccountDAO {
             if(rowsDeletedNum == 1) return true;
 
         }catch(SQLException e){
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         }
 
         return false;
