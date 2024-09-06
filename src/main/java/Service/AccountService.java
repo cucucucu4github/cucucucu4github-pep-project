@@ -41,6 +41,15 @@ public class AccountService {
 
         return newAccount;
     }
+
+    /**
+     * Get the Account by given username
+     * @param username the username given by user
+     * @return account the account queried by username
+     */
+    public Account getAccountByUsername(String username){
+        return this.accountDAO.getAccountByUserName(username);
+    }
     
 
     // user account log in service

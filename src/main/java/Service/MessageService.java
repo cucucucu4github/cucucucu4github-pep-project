@@ -32,7 +32,7 @@ public class MessageService {
     // return a Message object identified by given message_id
     // return null if not exist or error happened
     public Message getMessageByMessageId(int message_id){
-        return this.getMessageByMessageId(message_id);
+        return this.messageDAO.getMessageById(message_id);
     }
 
     // get all messages by user id
@@ -61,8 +61,9 @@ public class MessageService {
     }
 
     // delete Message by message id
-    public void deleteMessageById(int message_id){
-        this.messageDAO.deleteMessageById(message_id);
+    // return true if delete success affect 1 row; false otherwise
+    public boolean deleteMessageById(int message_id){
+        return this.messageDAO.deleteMessageById(message_id);
     }
 
 }
