@@ -102,22 +102,22 @@ public class AccountDAO {
 
     // insert a new account by username and password, return updated Account
     // return null if failure
-    public Account insertAccount(String newUsername, String newPassword){
+    public Account insertAccount(Account insertAccount){
 
         String sql = "INSERT INTO Account (username, password) VALUES (?, ?);";
 
         try(Connection connection = ConnectionUtil.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);){
             
-            ps.setString(1, newUsername);
-            ps.setString(2, newPassword);
+            ps.setString(1, insertAccount.getUsername());
+            ps.setString(2, insertAccount.getPassword());
             
             // execute the query, and then get the result;
             ps.executeUpdate();
             try(ResultSet rs = ps.getGeneratedKeys()){
                 if (rs.next()){
                     int generatedId = (int) rs.getLong(1);
-                    Account newAccount = new Account(generatedId, newUsername, newPassword);
+                    Account newAccount = new Account(generatedId, insertAccount.getUsername(), insertAccount.getPassword());
                     return newAccount;
                 }
             }
@@ -131,7 +131,7 @@ public class AccountDAO {
 
     // update an account password by id and password
     // return boolean, true means update success, fail means update failure.
-    public boolean updateAccountPasswordById(int id, String password){
+    public boolean updateAccountPasswordById(Account account){
         
         String sql = "UPDATE Account SET password = ? WHERE account_id = ?;";
 
@@ -139,8 +139,8 @@ public class AccountDAO {
             PreparedStatement ps = connection.prepareStatement(sql);){
 
             // prepare the query statement
-            ps.setString(1, password);
-            ps.setInt(2, id);
+            ps.setString(1, account.getPassword());
+            ps.setInt(2, account.getAccount_id());
             
             // execute the query, and then get the result;
             // the rows updated should only be 1, since all id are unique
@@ -156,15 +156,15 @@ public class AccountDAO {
 
     // update an account password by username and password.
     // return boolean, true means update success, fail means update failure.
-    public boolean updateAccountPasswordByUsername(String username, String password){
+    public boolean updateAccountPasswordByUsername(Account account){
         
         String sql = "UPDATE Account SET password = ? WHERE username = ?;";
 
         try(Connection connection = ConnectionUtil.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql);){
 
-            ps.setString(1, password);
-            ps.setString(2, username);
+            ps.setString(1, account.getPassword());
+            ps.setString(2, account.getUsername());
             
             // execute the query, and then get the result;
             // the rows updated should only be 1, since all username are unique

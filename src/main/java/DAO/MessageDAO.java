@@ -22,24 +22,24 @@ public class MessageDAO {
 
     // insert a new message
     // return Message inserted
-    public Message insertMessage(int posted_by, String message_text, long time_posted){
+    public Message insertMessage(Message insertMessage){
         
         String sql = "INSERT INTO Message (posted_by, message_text, time_posted_epoch) VALUES (?, ?, ?);";
         
         try(Connection connection = ConnectionUtil.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);){
 
-                ps.setInt(1, posted_by);
-                ps.setString(2, message_text);
-                ps.setLong(3, time_posted);
+                ps.setInt(1, insertMessage.getPosted_by());
+                ps.setString(2, insertMessage.getMessage_text());
+                ps.setLong(3, insertMessage.getTime_posted_epoch());
 
                 // execute update, get the result set
                 ps.executeUpdate();
                 try(ResultSet rs = ps.getGeneratedKeys();){
                     if(rs.next()){
                         int keyGenerated = rs.getInt(1);
-                        Message newMessage = new Message(keyGenerated, posted_by, message_text, time_posted);
-                        return newMessage;
+                        insertMessage.setMessage_id(keyGenerated);
+                        return insertMessage;
                     }
                 }
                 
