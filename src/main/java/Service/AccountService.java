@@ -14,23 +14,30 @@ public class AccountService {
         this.accountDAO = new AccountDAO();
     }
 
-    // create a new account
-    // return account object created. 
-    // return null if account alreadyexist or database insert failed.
+    /** 
+     * This service to insert a new account into database
+     * First check if all user input valid.
+     * Then insert the account to database.
+     * If insert success, return the Account inserted.
+     * If account info invalid, account already exist, insert failure, return null.
+     * @param account the Account object contains new account username and password
+     * @return Account that just inserted, or null if failure.
+     */
     public Account createAccount(Account account){
 
-        // if the account passed in is null, return null;
-        if(account == null) {
-            System.err.println("Account creation failure: Account you passed in is empty.");
+        String newUsername = account.getUsername();
+        String newPassword = account.getPassword();
+
+        // if the account information is invalid or username already exist, return null;
+        if(account == null || 
+            newUsername == null || newUsername.length() < 1 || 
+            newPassword == null || newPassword.length() < 4 ||
+            this.accountDAO.getAccountByUserName(newUsername) != null) {
+            System.err.println("Account creation failure: Account information invalid.");
             return null;
         }
 
-        // check if the account username already exist, return null if so.
-        if(accountDAO.getAccountByUserName(account.getUsername()) != null){
-            System.err.println("Account creation failure: Account you want to create already exist: " + account.getUsername());
-            return null;
-        }
-
+        // execute account insert
         Account newAccount = accountDAO.insertAccount(account);
 
         // check if account insert failed, return null if so.

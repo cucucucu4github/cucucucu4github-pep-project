@@ -74,8 +74,11 @@ public class AccountDAO {
         return null;
     }
 
-    // return a specific account by username
-    // the reason I need this method is I do not know the id when user want to login/register
+    /**
+     * return the account queried from database by given username
+     * @param username The username need to search.
+     * @return Account onject identified by username. Or null if not exist.
+     */
     public Account getAccountByUserName(String username){
 
         String sql = "SELECT * FROM Account WHERE username = ?;";
@@ -100,8 +103,11 @@ public class AccountDAO {
         return null;
     }
 
-    // insert a new account by username and password, return updated Account
-    // return null if failure
+    /**
+     * insert a new account by Account's username and password
+     * @param insertAccount Account object contains information of new Account 
+     * @return updated Account if success. Null if failed.
+     */
     public Account insertAccount(Account insertAccount){
 
         String sql = "INSERT INTO Account (username, password) VALUES (?, ?);";

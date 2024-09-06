@@ -9,12 +9,25 @@ import Model.Message;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
  * found in readme.md as well as the test cases. You should
  * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
  */
 public class SocialMediaController {
+
+    AccountService accountService;
+    MessageService messageService;
+
+    // init the Controler
+    public SocialMediaController(){
+        this.accountService = new AccountService();
+        this.messageService = new MessageService();
+    }
+
     /**
      * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
      * suite must receive a Javalin object from this method.
@@ -39,14 +52,27 @@ public class SocialMediaController {
 
     /**
      * This handler for register a new user.
-     * First check if all user input valid.
-     * Then insert the account to database.
      * If success, response the inserted account as json and set 200.
      * Otherwise, set 400.
      * @param context The Javalin Context object manages information about both the HTTP request and response.
+     * @throws JsonProcessingException will be thrown if there is an issue converting JSON into an object.
      */
-    private void registerNewUserHandler(Context context){
+    private void registerNewUserHandler(Context context) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Account newAccount = mapper.readValue(context.body(), Account.class);
+        
+        // create the new account
+        newAccount = this.accountService.createAccount(newAccount);
+        
+        // check if insert failed
+        if(newAccount == null){
+            context.status(400);
+            return;
+        }
 
+        // insert success
+        context.status(200);
+        context.json(newAccount);
     }
 
     /**
