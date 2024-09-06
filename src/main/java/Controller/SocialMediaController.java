@@ -12,6 +12,8 @@ import io.javalin.http.Context;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.List;
+
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
  * found in readme.md as well as the test cases. You should
@@ -77,26 +79,54 @@ public class SocialMediaController {
 
     /**
      * Handler for user login
-     * First check if username exist
-     * Then then check if username, password matchs.
-     * If matches, response the inserted account as json and set 200.
+     * Call service layer to check the login matches.
+     * If matches, response the matched account as json and set 200.
      * Otherwise, set 401.
      * @param context The Javalin Context object manages information about both the HTTP request and response.
+     * @throws JsonProcessingException will be thrown if there is an issue converting JSON into an object.
      */
-    private void loginHandler(Context context){
+    private void loginHandler(Context context) throws JsonProcessingException {
+        
+        ObjectMapper mapper = new ObjectMapper();
+        Account account = mapper.readValue(context.body(), Account.class);
 
+        // call service layer to check the login condition
+        Account matchedAccount = this.accountService.logInAccountMatches(account);
+
+        // if no match
+        if(matchedAccount == null) {
+            context.status(401);
+            return;
+        }
+
+        // if matches
+        context.status(200);
+        context.json(matchedAccount);
     }
 
     /**
      * Handler for create new Message
-     * First check if all user inputs are valid: posted_by exist, message not empty and not over 255 char.
-     * Then insert message to database.
      * If success, return message, set 200.
      * Otherwise, set 400.
      * @param context The Javalin Context object manages information about both the HTTP request and response.
+     *      The body should only contains posted_by, message_text and time.
+     * @throws JsonProcessingException will be thrown if there is an issue converting JSON into an object.
      */
-    private void createMessageHandler(Context context){
+    private void createMessageHandler(Context context) throws JsonProcessingException {
 
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(context.body(), Message.class);
+
+        // call service layer to create a new message and insert
+        Message newMessage = this.messageService.insertMessage(message);
+
+        if(newMessage == null){
+            context.status(400);
+            return;
+        }
+
+        context.status(200);
+        context.json(newMessage);
     }
 
     /**
@@ -104,9 +134,12 @@ public class SocialMediaController {
      * Response all messages get from database as json.
      * Always set 200.
      * @param context The Javalin Context object manages information about both the HTTP request and response.
+     * @throws JsonProcessingException will be thrown if there is an issue converting JSON into an object.
      */
-    private void getAllMessagesHandler(Context context){
-
+    private void getAllMessagesHandler(Context context) throws JsonProcessingException {
+        List<Message> allMessages = this.messageService.getAllMessages();
+        context.status(200);
+        context.json(allMessages);
     }
 
     /**
@@ -115,20 +148,41 @@ public class SocialMediaController {
      * Otherwise empty.
      * Always set 200.
      * @param context The Javalin Context object manages information about both the HTTP request and response.
+     * @throws JsonProcessingException will be thrown if there is an issue converting JSON into an object.
      */
-    private void getMessageByIdHandler(Context context){
+    private void getMessageByIdHandler(Context context) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(context.body(), Message.class);
 
+        Message quiredMessage = this.messageService.getMessageByMessageId(message.getMessage_id());
+
+        // message_id not exist or SQL failed
+        if(quiredMessage == null){
+            context.status(200);
+            context.json("{}");
+        }
+
+        context.status(200);
+        context.json(quiredMessage); // what if quiredMessage == null?
     }
 
     /**
      * Handler to delete the message by message id
-     * Check if message exist.
-     * If exist, delete it, response with deleted message as hson, and set 200.
-     * If not exist, response with empty, set 200.
+     * If delete success, response with deleted message as hson, and set 200.
+     * If delete failed, may because not exist or SQL failed, response with empty, set 200.
      * @param context
+     * @throws JsonProcessingException will be thrown if there is an issue converting JSON into an object.
      */
-    private void deleteMessageByIdHandler(Context context){
-
+    private void deleteMessageByIdHandler(Context context) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Message deletedMessage = mapper.readValue(context.body(), Message.class);
+        
+        context.status(200);
+        if(deletedMessage == null){
+            // if message not exist or SQL failed.
+            context.json("{}");
+        }
+        context.json(deletedMessage);
     }
 
     /**
@@ -138,9 +192,26 @@ public class SocialMediaController {
      * Response Message if success, set 200.
      * Otherwise set 400.
      * @param context The Javalin Context object manages information about both the HTTP request and response.
+     * @throws JsonProcessingException will be thrown if there is an issue converting JSON into an object.
      */
-    private void updateMessageHandler(Context context){
+    private void updateMessageHandler(Context context) throws JsonProcessingException {
+        
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(context.body(), Message.class);
+        
+        // get message id and text
+        int message_id = Integer.valueOf(context.pathParam("message_id"));
+        String message_text = message.getMessage_text();
 
+        Message updatedMessage = this.messageService.updateMessageTextByMessageId(message_id, message_text);
+
+        // if update failed
+        if(updatedMessage == null){
+            context.status(400);
+            return;
+        }
+        context.status(200);
+        context.json(updatedMessage);
     }
 
     /**
@@ -150,8 +221,16 @@ public class SocialMediaController {
      * Response all messages if success, set 200.
      * Otherwise set 400.
      *  @param context The Javalin Context object manages information about both the HTTP request and response.
+     * @throws JsonProcessingException will be thrown if there is an issue converting JSON into an object.
      */
-    private void getAllMessagesFromAccountIdHandler(Context context){
+    private void getAllMessagesFromAccountIdHandler(Context context) throws JsonProcessingException {
 
+        // get account id
+        int account_id = Integer.valueOf(context.pathParam("account_id"));
+
+        List<Message> userMessages = this.messageService.getAllMessagesByUserId(account_id);
+        
+        context.status(200);
+        context.json(userMessages);
     }
 }

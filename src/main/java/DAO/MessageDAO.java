@@ -161,8 +161,11 @@ public class MessageDAO {
     }
 
     // delete message by id
-    // return boolean, true means delete successful, false means delete failure
-    public boolean deleteMessageById(int message_id){
+    /**
+     * delete the message by given message id
+     * @param message_id
+     */
+    public void deleteMessageById(int message_id){
         
         String sql = "DELETE FROM Message WHERE message_id = ?;";
 
@@ -173,15 +176,9 @@ public class MessageDAO {
 
             // execute update, get the result set
             int numRowsUpdated = ps.executeUpdate();
-            return numRowsUpdated == 1;
 
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
-
-        return false;
-
     }
-
-    
 }

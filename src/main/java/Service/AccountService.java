@@ -58,15 +58,21 @@ public class AccountService {
         return this.accountDAO.getAccountByUserName(username);
     }
     
-
-    // user account log in service
-    // return true if account exist and password matchs username.
-    // return false otherwise.
-    public boolean logIn(Account account){
+    /**
+     * Logic that check the login condition
+     * First check if user input valid.
+     * Then check if username exist.
+     * Then then check if username, password matchs.
+     * @param account user input account information, we only need the username and password.
+     * @return Account that matched. Null if no matchs. 
+     */
+    public Account logInAccountMatches(Account account){
         
         // if the account passed in is null, return false.
-        if(account == null || account.getUsername() == null || account.getPassword() == null) 
-            return false;
+        if(account == null 
+            || account.getUsername() == null || account.getPassword() == null
+            || account.getUsername().length() < 1 || account.getPassword().length() < 4) 
+            return null;
         
         Account accountQueried = accountDAO.getAccountByUserName(account.getUsername());
 
@@ -74,13 +80,16 @@ public class AccountService {
         if(accountQueried == null || 
             !accountQueried.getUsername().equals(account.getUsername()) ||
             !accountQueried.getPassword().equals(account.getPassword())) 
-            return false; 
+            return null; 
         
-        return true;
+        return accountQueried;
     }
-    
-    // get all accounts
-    // this method may not use, but I included it here.
+
+
+    /**
+     * get all accounts
+     * @return List<Account> which contains all accounts
+     */
     public List<Account> getAllAccounts(){
         return accountDAO.getAllAccounts();
     }
