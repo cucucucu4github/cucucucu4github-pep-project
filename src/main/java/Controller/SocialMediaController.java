@@ -151,17 +151,17 @@ public class SocialMediaController {
      * @throws JsonProcessingException will be thrown if there is an issue converting JSON into an object.
      */
     private void getMessageByIdHandler(Context context) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        Message message = mapper.readValue(context.body(), Message.class);
+        
+        // get message id
+        int message_id = Integer.valueOf(context.pathParam("message_id"));
+        // qyery the message
+        Message quiredMessage = this.messageService.getMessageByMessageId(message_id);
 
-        Message quiredMessage = this.messageService.getMessageByMessageId(message.getMessage_id());
-
-        // message_id not exist or SQL failed
         if(quiredMessage == null){
+            // message_id not exist or SQL failed
             context.status(200);
-            context.json("{}");
+            return;
         }
-
         context.status(200);
         context.json(quiredMessage); // what if quiredMessage == null?
     }
@@ -174,15 +174,15 @@ public class SocialMediaController {
      * @throws JsonProcessingException will be thrown if there is an issue converting JSON into an object.
      */
     private void deleteMessageByIdHandler(Context context) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        Message deletedMessage = mapper.readValue(context.body(), Message.class);
         
-        context.status(200);
+        int deletedMessageId = Integer.valueOf(context.pathParam("message_id"));
+        Message deletedMessage = this.messageService.deleteMessageById(deletedMessageId);
+
         if(deletedMessage == null){
-            // if message not exist or SQL failed.
-            context.json("{}");
+            context.status(200);
+            return;
         }
-        context.json(deletedMessage);
+        context.status(200).json(deletedMessage);
     }
 
     /**

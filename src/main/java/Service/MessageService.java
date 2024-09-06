@@ -80,12 +80,14 @@ public class MessageService {
      * @return Message just been updated
      */
     public Message updateMessageTextByMessageId(int message_id, String message_text){
-        // Should I finished the "message_id exist check" in service layer or controler layer?
-        
-        // if message does not exist in database
-        if(this.getMessageByMessageId(message_id) == null) {
+
+        // if message does not exist in database, or if message_text invalid, return null directly
+        if(this.getMessageByMessageId(message_id) == null || 
+            message_text.length() < 1 || 
+            message_text.length() > 255) {
             return null;
         }
+
         
         // if update failure
         if(!this.messageDAO.updateMessageTextByMessageId(message_id, message_text)){
