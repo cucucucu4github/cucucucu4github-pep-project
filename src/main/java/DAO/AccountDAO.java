@@ -24,6 +24,10 @@ public class AccountDAO {
     */
 
     // return all accounts
+    /**
+     * method that return all accounts from dataset.
+     * @return List<Account> that contains all accounts. May be empty.
+     */
     public List<Account> getAllAccounts(){
 
         List<Account> accounts = new ArrayList<>();
@@ -48,7 +52,11 @@ public class AccountDAO {
         return accounts;
     }
 
-    // return a specific account by id
+    /**
+     * query a specific account by id
+     * @param id
+     * @return Account object if query success. Null if query not exist or SQL failed.
+     */
     public Account getAccountById(int id){
 
         String sql = "SELECT * FROM Account WHERE account_id = ?;";
@@ -135,8 +143,11 @@ public class AccountDAO {
         return null;
     }
 
-    // update an account password by id and password
-    // return boolean, true means update success, fail means update failure.
+    /**
+     * update an account password by id
+     * @param account Account object that need to be update, only need to contain contain valid id and password.
+     * @return boolean, true means update success, fail means update failure.
+     */
     public boolean updateAccountPasswordById(Account account){
         
         String sql = "UPDATE Account SET password = ? WHERE account_id = ?;";
@@ -160,8 +171,11 @@ public class AccountDAO {
         return false;
     }
 
-    // update an account password by username and password.
-    // return boolean, true means update success, fail means update failure.
+    /**
+     * update an account password by username
+     * @param account Account object that need to be update, only need to contain contain valid username and password.
+     * @return boolean, true means update success, fail means update failure.
+     */
     public boolean updateAccountPasswordByUsername(Account account){
         
         String sql = "UPDATE Account SET password = ? WHERE username = ?;";
@@ -183,8 +197,11 @@ public class AccountDAO {
         return false;
     }
 
-    // delete account by username
-    // return boolean, true means delted one rows; false means failure;
+    /**
+     * delete account by username
+     * @param username
+     * @return boolean, true if delete success. false otherwise (account not exist or SQL failed)
+     */
     public boolean deleteAccountByUsername(String username){
 
         String sql = "DELETE FROM Account WHERE username = String";
@@ -206,8 +223,11 @@ public class AccountDAO {
         return false;
     }
 
-    // delete account by id
-    // return boolean, true means delted one rows; false means failure;
+    /**
+     * delete account by id
+     * @param id
+     * @return boolean, true if delete success. false otherwise (account not exist or SQL failed)
+     */
     public boolean deleteAccountById(int id){
 
         String sql = "DELETE FROM Account WHERE account_id = ?";

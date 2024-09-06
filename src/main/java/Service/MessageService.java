@@ -88,7 +88,6 @@ public class MessageService {
             return null;
         }
 
-        
         // if update failure
         if(!this.messageDAO.updateMessageTextByMessageId(message_id, message_text)){
             return null;

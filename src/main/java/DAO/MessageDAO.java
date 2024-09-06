@@ -20,8 +20,11 @@ import java.util.ArrayList;
 
 public class MessageDAO {
 
-    // insert a new message
-    // return Message inserted
+    /**
+     * insert a new message into database.
+     * @param insertMessage Message object that will be inserted. Only need posted_by, message_text, time_posted_epoch
+     * @return Message object taht just been inserted. Null if insert failed.
+     */
     public Message insertMessage(Message insertMessage){
         
         String sql = "INSERT INTO Message (posted_by, message_text, time_posted_epoch) VALUES (?, ?, ?);";
@@ -50,8 +53,10 @@ public class MessageDAO {
         return null;
     }
 
-    // get all message
-    // return list of messages
+    /**
+     * get all messages
+     * @return List<Message>. May be empty. 
+     */
     public List<Message> getAllMessages(){
 
         List<Message> messages = new ArrayList<>();
@@ -78,8 +83,11 @@ public class MessageDAO {
         return messages;
     }
 
-    // get all message by user id (posted_by)
-    // return list of Messages
+    /**
+     * get all message by user id (posted_by)
+     * @param user_id
+     * @return List<Message>. Maybe empty if query failed.
+     */
     public List<Message> getAllMessagesByUserId(int user_id){
         
         List<Message> messages = new ArrayList<>();
@@ -108,8 +116,11 @@ public class MessageDAO {
         return messages;
     }
 
-    // get message by message id
-    // return Messages
+    /**
+     * get message by message id
+     * @param message_id int.
+     * @return Message just been queried. Maybe null if query failed.
+     */
     public Message getMessageById(int message_id){
 
         String sql = "SELECT * FROM Message WHERE message_id = ?;";
@@ -137,8 +148,12 @@ public class MessageDAO {
         return null;
     }
 
-    // update message_text by message id
-    // return boolean
+    /**
+     * update message_text by message id
+     * @param message_id
+     * @param message_text should been checked as valid in service layer
+     * @return boolean true if message update success. false otherwise.
+     */
     public boolean updateMessageTextByMessageId(int message_id, String message_text){
         
         String sql = "UPDATE Message SET message_text = ? WHERE message_id = ?;";
@@ -160,7 +175,6 @@ public class MessageDAO {
         return false;
     }
 
-    // delete message by id
     /**
      * delete the message by given message id
      * @param message_id
